@@ -1,56 +1,44 @@
 let otpVerified = false;
 
+// ---------------- CART COUNT ----------------
 function updateCartCount() {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let count = 0;
 
-    cart.forEach(item => count += item.quantity);
+    cart.forEach(item => {
+        count += item.quantity;
+    });
 
     let cartCount = document.getElementById("cart-count");
     if (cartCount) cartCount.innerText = count;
 }
 
-function scrollToProducts() {
-    let products = document.getElementById("products");
-    if (products) {
-        products.scrollIntoView({ behavior: "smooth" });
-    }
-}
-
-function getCartQty(name) {
+// ---------------- HOME PAGE CONTROLS ----------------
+function renderCartControls(id, name, price) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let item = cart.find(i => i.name === name);
-    return item ? item.quantity : 0;
-}
+    let item = cart.find(x => x.name === name);
 
-function renderCartControls(productId, name, price) {
-    let container = document.getElementById("cart-controls-" + productId);
-    if (!container) return;
+    let box = document.getElementById("cart-controls-" + id);
+    if (!box) return;
 
-    let qty = getCartQty(name);
-
-    if (qty === 0) {
-        container.innerHTML = `
-            <button onclick="addToCart('${name}', '${price}', ${productId})">
+    if (!item) {
+        box.innerHTML = `
+            <button onclick="addToCart('${name}', '${price}', '${id}')">
                 Add to Cart
             </button>
         `;
     } else {
-        container.innerHTML = `
-            <div style="display:flex; justify-content:center; gap:10px; align-items:center;">
-                <button onclick="decreaseQty('${name}', ${productId})"
-                style="width:35px;height:35px;background:#fb8c00;color:white;border:none;border-radius:8px;">−</button>
-
-                <span style="font-size:20px;font-weight:bold;">${qty}</span>
-
-                <button onclick="increaseQty('${name}', ${productId})"
-                style="width:35px;height:35px;background:#2e7d32;color:white;border:none;border-radius:8px;">+</button>
+        box.innerHTML = `
+            <div style="display:flex;justify-content:center;align-items:center;gap:12px;">
+                <button onclick="decreaseMainQty('${name}','${id}','${price}')">−</button>
+                <span style="font-size:20px;font-weight:bold;">${item.quantity}</span>
+                <button onclick="increaseMainQty('${name}','${id}','${price}')">+</button>
             </div>
         `;
     }
 }
 
-function addToCart(name, price, productId = null) {
+function addToCart(name, price, id) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let existing = cart.find(item => item.name === name);
 
@@ -67,10 +55,43 @@ function addToCart(name, price, productId = null) {
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
 
-    if (productId) renderCartControls(productId, name, price);
+    if (id) renderCartControls(id, name, price);
 }
 
-function increaseQty(name, productId = null) {
+function increaseMainQty(name, id, price) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart.forEach(item => {
+        if (item.name === name) item.quantity += 1;
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    renderCartControls(id, name, price);
+}
+
+function decreaseMainQty(name, id, price) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart = cart.map(item => {
+        if (item.name === name) item.quantity -= 1;
+        return item;
+    }).filter(item => item.quantity > 0);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    renderCartControls(id, name, price);
+}
+
+function scrollToProducts() {
+    let products = document.getElementById("products");
+    if (products) {
+        products.scrollIntoView({ behavior: "smooth" });
+    }
+}
+
+// ---------------- CHECKOUT ----------------
+function increaseQty(name) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     cart.forEach(item => {
@@ -80,11 +101,9 @@ function increaseQty(name, productId = null) {
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
     loadCheckout();
-
-    if (productId) renderCartControls(productId, name);
 }
 
-function decreaseQty(name, productId = null) {
+function decreaseQty(name) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     cart = cart.map(item => {
@@ -95,8 +114,6 @@ function decreaseQty(name, productId = null) {
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
     loadCheckout();
-
-    if (productId) renderCartControls(productId, name);
 }
 
 function removeItem(name) {
@@ -132,13 +149,6 @@ function loadCheckout() {
     let clearBtn = document.createElement("button");
     clearBtn.innerText = "Empty Cart";
     clearBtn.onclick = clearCart;
-    clearBtn.style.marginBottom = "20px";
-    clearBtn.style.background = "#616161";
-    clearBtn.style.color = "white";
-    clearBtn.style.padding = "8px 14px";
-    clearBtn.style.fontSize = "14px";
-    clearBtn.style.border = "none";
-    clearBtn.style.borderRadius = "8px";
     summary.appendChild(clearBtn);
 
     let total = 0;
@@ -159,16 +169,11 @@ function loadCheckout() {
 
                 <div>
                     <strong>${item.name}</strong><br><br>
-                    Qty: ${item.quantity}
 
-                    <button onclick="increaseQty('${item.name}')" 
-                    style="background:#2e7d32;color:white;width:35px;height:35px;border:none;border-radius:8px;">+</button>
-
-                    <button onclick="decreaseQty('${item.name}')" 
-                    style="background:#fb8c00;color:white;width:35px;height:35px;border:none;border-radius:8px;">−</button>
-
-                    <button onclick="removeItem('${item.name}')" 
-                    style="background:#e53935;color:white;width:35px;height:35px;border:none;border-radius:8px;">✕</button>
+                    <button onclick="decreaseQty('${item.name}')">−</button>
+                    <span style="margin:0 10px;">${item.quantity}</span>
+                    <button onclick="increaseQty('${item.name}')">+</button>
+                    <button onclick="removeItem('${item.name}')">✕</button>
 
                     <br><br>
                     <strong>₹${item.price * item.quantity}</strong>
@@ -183,6 +188,7 @@ function loadCheckout() {
     totalBox.innerText = "₹" + total;
 }
 
+// ---------------- OTP ----------------
 async function sendOTP() {
     let phone = document.getElementById("customerPhone").value;
 
@@ -198,7 +204,8 @@ async function sendOTP() {
     });
 
     let result = await response.json();
-    document.getElementById("otpStatus").innerText = "Your OTP is: " + result.otp;
+    document.getElementById("otpStatus").innerText =
+        "Your OTP is: " + result.otp;
 }
 
 async function verifyOTP() {
@@ -223,6 +230,7 @@ async function verifyOTP() {
     }
 }
 
+// ---------------- PLACE ORDER ----------------
 async function placeOrder() {
     if (!otpVerified) {
         alert("Verify OTP first");
@@ -234,6 +242,7 @@ async function placeOrder() {
     let address = document.getElementById("customerAddress").value;
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
     if (cart.length === 0) {
         alert("Cart is empty");
         return;
@@ -243,7 +252,7 @@ async function placeOrder() {
     let orderText = "";
 
     cart.forEach(item => {
-        orderText += item.name + " x " + item.quantity + " = ₹" + (item.price * item.quantity) + "\n";
+        orderText += `${item.name} x ${item.quantity} = ₹${item.price * item.quantity}\n`;
         total += item.price * item.quantity;
     });
 
@@ -251,7 +260,9 @@ async function placeOrder() {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-            name, phone, address,
+            name,
+            phone,
+            address,
             items: orderText,
             total
         })
