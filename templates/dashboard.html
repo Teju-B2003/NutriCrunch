@@ -54,7 +54,7 @@
             <input name="stock" placeholder="Stock Qty" required>
 
             <select name="available">
-                <option value="true">Available</option>
+                <option value="true">In Stock</option>
                 <option value="false">Out of Stock</option>
             </select>
 
@@ -66,58 +66,61 @@
     <!-- Products -->
     <div class="dashboard-card">
         <h2>Products</h2>
+
         <table>
             <tr>
                 <th>Image</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th>Price</th>
-                <th>Weight</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Update</th>
+                <th>Edit</th>
             </tr>
 
             {% for product in products %}
             <tr>
-                <form action="/update_product/{{ product.id }}" method="POST">
-                    <td>
-                        {% if product.image %}
-                        <img src="{{ url_for('static', filename='uploads/' + product.image) }}"
-                             width="70" style="border-radius:10px;">
-                        {% endif %}
-                    </td>
+                <td>
+                    {% if product.image %}
+                    <img src="{{ url_for('static', filename='uploads/' + product.image) }}"
+                         width="70" style="border-radius:10px;">
+                    {% endif %}
+                </td>
 
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.category }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
 
-                    <td>
-                        <input name="price" value="{{ product.price }}" style="width:80px;">
-                    </td>
+                <td>
+                    <form action="/update_product/{{ product.id }}" method="POST"
+                          style="display:flex; gap:10px; flex-wrap:wrap;">
 
-                    <td>
-                        <input name="weight" value="{{ product.weight }}" style="width:80px;">
-                    </td>
+                        <input name="price"
+                               value="{{ product.price }}"
+                               placeholder="Price"
+                               style="width:80px;">
 
-                    <td>
-                        <input name="stock" value="{{ product.stock }}" style="width:80px;">
-                    </td>
+                        <input name="weight"
+                               value="{{ product.weight }}"
+                               placeholder="Weight"
+                               style="width:80px;">
 
-                    <td>
+                        <input name="stock"
+                               value="{{ product.stock }}"
+                               placeholder="Stock"
+                               style="width:80px;">
+
                         <select name="available">
-                            <option value="true" {% if product.available %}selected{% endif %}>
+                            <option value="true"
+                                {% if product.available %}selected{% endif %}>
                                 In Stock
                             </option>
-                            <option value="false" {% if not product.available %}selected{% endif %}>
+
+                            <option value="false"
+                                {% if not product.available %}selected{% endif %}>
                                 Out of Stock
                             </option>
                         </select>
-                    </td>
 
-                    <td>
                         <button type="submit">Update</button>
-                    </td>
-                </form>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -147,7 +150,7 @@
                 <td>{{ order.address }}</td>
                 <td style="white-space: pre-line;">{{ order.items }}</td>
                 <td>₹{{ order.total }}</td>
-                <td><strong>{{ order.status }}</strong></td>
+                <td>{{ order.status }}</td>
 
                 <td>
                     <a href="/update_status/{{ order.id }}/Confirmed"><button>Confirm</button></a>
@@ -183,7 +186,7 @@
             {% endfor %}
         </table>
     </div>
-
 </div>
+
 </body>
 </html>
