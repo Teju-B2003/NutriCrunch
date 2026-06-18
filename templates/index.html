@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriCrunch | Healthy Crisps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body onload="updateCartCount()">
+
+<header class="navbar">
+    <div class="logo">🌿 NutriCrunch</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="#products">Products</a>
+        <a href="/track">Track Order</a>
+        <a href="/checkout">Cart 🛒 (<span id="cart-count">0</span>)</a>
+        <a href="/admin">Admin</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Healthy Crunch.<br>Real Taste.</h1>
+    <p>Premium dehydrated fruit & veggie crisps with zero oil and zero preservatives.</p>
+    <button onclick="scrollToProducts()">Shop Now</button>
+</section>
+
+<section id="products" class="products">
+    <h2>Our Products</h2>
+
+    <!-- Search Bar -->
+    <div style="margin:30px 0; text-align:center;">
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search products..."
+            onkeyup="searchProducts()"
+            style="width:320px; padding:14px; border:1px solid #ccc; border-radius:12px; font-size:16px;"
+        >
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="card product-card">
+
+            <img 
+                src="{{ url_for('static', filename='images/' + get_product_image(product.name)) }}" 
+                alt="{{ product.name }}"
+                style="width:100%; border-radius:15px; margin-bottom:15px;"
+            >
+
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.category }}</p>
+            <p>{{ product.weight }}</p>
+            <h4>₹{{ product.price }}</h4>
+
+            <button onclick="addToCart('{{ product.name }}', '{{ product.price }}')">
+                Add to Cart
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<footer>
+    <p>📍 Yelahanka New Town, Bengaluru</p>
+    <p>📞 WhatsApp: 8660586938</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

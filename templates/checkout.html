@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | NutriCrunch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body onload="loadCheckout()">
+
+<header class="navbar">
+    <div class="logo">🌿 NutriCrunch</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/checkout">Cart 🛒</a>
+        <a href="/admin">Admin</a>
+    </nav>
+</header>
+
+<div class="checkout-container">
+    <h1>Checkout</h1>
+
+    <div class="order-summary">
+        <h2>Order Summary</h2>
+        <div id="order-items"></div>
+        <hr>
+        <h3>Total: <span id="total-price">₹0</span></h3>
+    </div>
+
+    <form class="checkout-form" onsubmit="event.preventDefault(); placeOrder();">
+        <input id="customerName" type="text" placeholder="Full Name" required>
+
+        <input id="customerPhone" type="tel" placeholder="Phone Number" required>
+
+        <button type="button" onclick="sendOTP()">Send OTP</button>
+
+        <input id="otpBox" type="number" placeholder="Enter OTP">
+
+        <button type="button" onclick="verifyOTP()">Verify OTP</button>
+
+        <p id="otpStatus"></p>
+
+        <textarea id="customerAddress" placeholder="Delivery Address" rows="4" required></textarea>
+
+        <button id="placeOrderBtn" type="submit" disabled>
+            Place Order on WhatsApp
+        </button>
+    </form>
+</div>
+
+<footer>
+    <p>📍 Yelahanka New Town, Bengaluru</p>
+    <p>📞 WhatsApp: 8660586938</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+.body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f1ea;
+}
+
+.navbar {
+    background: #1f5c2e;
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.navbar nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 18px;
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background: linear-gradient(to right, #e8f5e9, #fff);
+}
+
+.hero h1 {
+    font-size: 60px;
+    color: #1f5c2e;
+}
+
+.hero p {
+    font-size: 22px;
+}
+
+button {
+    background: orange;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.products {
+    padding: 60px;
+}
+
+.product-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: white;
+    width: 250px;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+footer {
+    background: #1f5c2e;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Checkout CSS */
+.checkout-container {
+    max-width: 800px;
+    margin: 60px auto;
+    background: white;
+    padding: 50px;
+    border-radius: 25px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.checkout-container h1 {
+    font-size: 52px;
+    color: #1F5C2E;
+}
+
+.order-summary {
+    background: #f7f7f7;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.checkout-form input,
+.checkout-form textarea {
+    width: 100%;
+    padding: 18px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    box-sizing: border-box;
+}
+
+.checkout-form textarea {
+    min-height: 140px;
+}
+
+.checkout-form button {
+    width: 100%;
+}
+/* Dashboard Styling */
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.dashboard-container h1 {
+    text-align: center;
+    color: #1F5C2E;
+    margin-bottom: 30px;
+}
+
+.dashboard-card {
+    background: white;
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.product-form {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.product-form input {
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.product-form button {
+    grid-column: span 4;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th {
+    background: #1F5C2E;
+    color: white;
+    padding: 14px;
+    text-align: left;
+}
+
+table td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+table tr:hover {
+    background: #f9f9f9;
+}
+.dashboard-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.dashboard-container h1 {
+    text-align: center;
+    color: #1F5C2E;
+    margin-bottom: 30px;
+}
+
+.dashboard-card {
+    background: white;
+    margin-bottom: 30px;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.product-form {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    align-items: center;
+}
+
+.product-form input {
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.product-form button {
+    grid-column: span 4;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+}
+
+table th {
+    background: #1F5C2E;
+    color: white;
+    padding: 15px;
+}
+
+table td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+table tr:hover {
+    background: #f3f3f3;
+}
