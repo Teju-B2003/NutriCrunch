@@ -45,7 +45,6 @@ class Order(db.Model):
     status = db.Column(db.String(20), default="Pending")
 
 
-# ---------------- DATABASE INIT ----------------
 with app.app_context():
     os.makedirs("static/uploads", exist_ok=True)
     db.create_all()
@@ -60,7 +59,6 @@ with app.app_context():
             Product(name="Ladies Finger Crisps", category="Veggie Crisps", price=110, weight="80g", stock=20, available=True),
             Product(name="Bitterguard Crisps", category="Veggie Crisps", price=100, weight="80g", stock=20, available=True),
         ]
-
         db.session.add_all(default_products)
         db.session.commit()
 
@@ -77,13 +75,13 @@ def get_product_image(product_name):
     }
 
     name = product_name.lower()
-
     for key in images:
         if key in name:
             return images[key]
-
     return "BANANA.png"
-    @app.route("/")
+
+
+@app.route("/")
 def home():
     products = Product.query.all()
     return render_template(
@@ -110,177 +108,25 @@ def track_order():
     return render_template("track.html", orders=orders)
 
 
-# ---------------- OTP SEND ----------------
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
     data = request.get_json()
     phone = data["phone"]
 
     otp = random.randint(1000, 9999)
-
     session["otp"] = str(otp)
     session["otp_phone"] = phone
 
-    return jsonify({
-        "message": "OTP Sent",
-        "otp": str(otp)
-    })
+    return jsonify({"message": "OTP Sent", "otp": str(otp)})
 
 
-# ---------------- OTP VERIFY ----------------
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
     data = request.get_json()
     otp = data["otp"]
     phone = data["phone"]
 
-    if (
-        "otp" in session and
-        session["otp"] == str(otp) and
-        session["otp_phone"] == phone
-    ):
+    if "otp" in session and session["otp"] == str(otp) and session["otp_phone"] == phone:
         return jsonify({"success": True})
 
     return jsonify({"success": False})
-
-
-# ---------------- SAVE ORDER ----------------
-@app.route("/save_order", methods=["POST"])
-def save_order():
-    data = request.get_json()
-
-    buyer = Buyer.query.filter_by(phone=data["phone"]).first()
-
-    if buyer:
-        buyer.total_orders += 1
-    else:
-        buyer = Buyer(
-            name=data["name"],
-            phone=data["phone"],
-            total_orders=1
-        )
-        db.session.add(buyer)
-
-    order = Order(
-        customer_name=data["name"],
-        phone=data["phone"],
-        address=data["address"],
-        items=data["items"],
-        total=data["total"],
-        status="Pending"
-    )
-
-    db.session.add(order)
-    db.session.commit()
-
-    return jsonify({"message": "Order Saved"})
-
-
-# ---------------- ORDER STATUS ----------------
-@app.route("/update_status/<int:order_id>/<status>")
-def update_status(order_id, status):
-    order = Order.query.get(order_id)
-
-    if order:
-        order.status = status
-        db.session.commit()
-
-    return redirect("/dashboard")
-
-
-@app.route("/delete_order/<int:order_id>")
-def delete_order(order_id):
-    order = Order.query.get(order_id)
-
-    if order:
-        db.session.delete(order)
-        db.session.commit()
-
-    return redirect("/dashboard")
-    # ---------------- ADMIN LOGIN ----------------
-@app.route("/admin", methods=["GET", "POST"])
-def admin():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-
-        if username == "admin" and password == "Nutri@2026":
-            session["admin"] = True
-            return redirect("/dashboard")
-
-    return render_template("admin_login.html")
-
-
-# ---------------- DASHBOARD ----------------
-@app.route("/dashboard", methods=["GET", "POST"])
-def dashboard():
-    if "admin" not in session:
-        return redirect("/admin")
-
-    if request.method == "POST":
-        image = request.files["image"]
-        filename = ""
-
-        if image and image.filename != "":
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-
-        product = Product(
-            name=request.form["name"],
-            category=request.form["category"],
-            price=int(request.form["price"]),
-            weight=request.form["weight"],
-            stock=int(request.form["stock"]),
-            available=request.form["available"] == "true",
-            image=filename
-        )
-
-        db.session.add(product)
-        db.session.commit()
-
-    products = Product.query.all()
-    orders = Order.query.all()
-    buyers = Buyer.query.all()
-
-    total_orders = len(orders)
-    total_products = len(products)
-    total_revenue = sum(order.total for order in orders)
-    pending_orders = len([o for o in orders if o.status != "Delivered"])
-
-    return render_template(
-        "dashboard.html",
-        products=products,
-        orders=orders,
-        buyers=buyers,
-        total_orders=total_orders,
-        total_products=total_products,
-        total_revenue=total_revenue,
-        pending_orders=pending_orders
-    )
-
-
-# ---------------- UPDATE PRODUCT ----------------
-@app.route("/update_product/<int:id>", methods=["POST"])
-def update_product(id):
-    product = Product.query.get(id)
-
-    if product:
-        product.price = int(request.form["price"])
-        product.weight = request.form["weight"]
-        product.stock = int(request.form["stock"])
-        product.available = request.form["available"] == "true"
-        db.session.commit()
-
-    return redirect("/dashboard")
-
-
-# ---------------- LOGOUT ----------------
-@app.route("/logout")
-def logout():
-    session.pop("admin", None)
-    return redirect("/")
-
-
-# ---------------- RUN ----------------
-if __name__ == "__main__":
-    app.run(debug=True)
