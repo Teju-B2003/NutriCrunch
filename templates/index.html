@@ -6,7 +6,7 @@
     <title>NutriCrunch | Healthy Crisps</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body onload="updateCartCount()">
+<body>
 
 <header class="navbar">
     <div class="logo">🌿 NutriCrunch</div>
@@ -42,8 +42,8 @@
         {% for product in products %}
         <div class="card product-card">
 
-            <img 
-                src="{{ url_for('static', filename='images/' + get_product_image(product.name)) }}" 
+            <img
+                src="{{ url_for('static', filename='images/' + get_product_image(product.name)) }}"
                 alt="{{ product.name }}"
                 style="width:100%; border-radius:15px; margin-bottom:15px;"
             >
@@ -54,22 +54,6 @@
             <h4>₹{{ product.price }}</h4>
 
             <div id="cart-controls-{{ product.id }}"></div>
-
-<script>
-renderCartControls(
-    "{{ product.id }}",
-    "{{ product.name }}",
-    "{{ product.price }}"
-);
-</script>
-
-            <script>
-                renderCartControls(
-                    "{{ product.id }}",
-                    "{{ product.name }}",
-                    "{{ product.price }}"
-                );
-            </script>
 
         </div>
         {% endfor %}
@@ -82,5 +66,20 @@ renderCartControls(
 </footer>
 
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+window.onload = function() {
+    updateCartCount();
+
+    {% for product in products %}
+    renderCartControls(
+        "{{ product.id }}",
+        "{{ product.name }}",
+        "{{ product.price }}"
+    );
+    {% endfor %}
+};
+</script>
+
 </body>
 </html>
