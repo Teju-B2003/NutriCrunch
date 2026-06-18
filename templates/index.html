@@ -28,7 +28,6 @@
 <section id="products" class="products">
     <h2>Our Products</h2>
 
-    <!-- Search Bar -->
     <div style="margin:30px 0; text-align:center;">
         <input
             type="text"
@@ -55,10 +54,19 @@
             <h4>₹{{ product.price }}</h4>
 
             <div id="cart-controls-{{ product.id }}">
-    <button onclick="addToCart('{{ product.name }}', '{{ product.price }}')">
-        Add to Cart
-    </button>
-</div>
+                <button onclick="addToCart('{{ product.name }}', '{{ product.price }}', '{{ product.id }}')">
+                    Add to Cart
+                </button>
+            </div>
+
+            <script>
+                renderCartControls(
+                    "{{ product.id }}",
+                    "{{ product.name }}",
+                    "{{ product.price }}"
+                );
+            </script>
+
         </div>
         {% endfor %}
     </div>
