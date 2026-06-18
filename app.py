@@ -43,6 +43,25 @@ class Order(db.Model):
     status = db.Column(db.String(20), default="Pending")
 
 
+# ---------- DATABASE INIT FOR RENDER ----------
+with app.app_context():
+    os.makedirs("static/uploads", exist_ok=True)
+    db.create_all()
+
+    if Product.query.count() == 0:
+        default_products = [
+            Product(name="Banana Crisps", category="Fruit Crisps", price=80, weight="80g"),
+            Product(name="Jackfruit Crisps", category="Fruit Crisps", price=120, weight="80g"),
+            Product(name="Beetroot Crisps", category="Veggie Crisps", price=90, weight="90g"),
+            Product(name="Sweet Potato Crisps", category="Veggie Crisps", price=170, weight="90g"),
+            Product(name="Carrot Crisps", category="Veggie Crisps", price=80, weight="80g"),
+            Product(name="Ladies Finger Crisps", category="Veggie Crisps", price=110, weight="80g"),
+            Product(name="Bitterguard Crisps", category="Veggie Crisps", price=100, weight="80g"),
+        ]
+        db.session.add_all(default_products)
+        db.session.commit()
+
+
 def get_product_image(product_name):
     images = {
         "banana": "BANANA.png",
@@ -89,7 +108,6 @@ def track_order():
     return render_template("track.html", orders=orders)
 
 
-# ---------------- OTP ----------------
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
     data = request.get_json()
@@ -119,9 +137,6 @@ def verify_otp():
         return jsonify({"success": True})
 
     return jsonify({"success": False})
-
-
-# ---------------- SAVE ORDER ----------------
 @app.route("/save_order", methods=["POST"])
 def save_order():
     data = request.get_json()
@@ -153,7 +168,6 @@ def save_order():
     return jsonify({"message": "Order Saved"})
 
 
-# ---------------- ORDER STATUS ----------------
 @app.route("/update_status/<int:order_id>/<status>")
 def update_status(order_id, status):
     order = Order.query.get(order_id)
@@ -240,21 +254,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        os.makedirs("static/uploads", exist_ok=True)
-        db.create_all()
-
-        if Product.query.count() == 0:
-            default_products = [
-                Product(name="Banana Crisps", category="Fruit Crisps", price=80, weight="80g"),
-                Product(name="Jackfruit Crisps", category="Fruit Crisps", price=120, weight="80g"),
-                Product(name="Beetroot Crisps", category="Veggie Crisps", price=90, weight="90g"),
-                Product(name="Sweet Potato Crisps", category="Veggie Crisps", price=170, weight="90g"),
-                Product(name="Carrot Crisps", category="Veggie Crisps", price=80, weight="80g"),
-                Product(name="Ladies Finger Crisps", category="Veggie Crisps", price=110, weight="80g"),
-                Product(name="Bitterguard Crisps", category="Veggie Crisps", price=100, weight="80g"),
-            ]
-            db.session.add_all(default_products)
-            db.session.commit()
-
     app.run(debug=True)
