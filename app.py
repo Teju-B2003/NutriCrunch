@@ -14,7 +14,7 @@ app.config["UPLOAD_FOLDER"] = "static/uploads"
 db = SQLAlchemy(app)
 
 
-# ---------------- PRODUCT TABLE ----------------
+# ---------------- MODELS ----------------
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -26,7 +26,6 @@ class Product(db.Model):
     image = db.Column(db.String(200))
 
 
-# ---------------- BUYER TABLE ----------------
 class Buyer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -34,7 +33,6 @@ class Buyer(db.Model):
     total_orders = db.Column(db.Integer, default=0)
 
 
-# ---------------- ORDER TABLE ----------------
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_name = db.Column(db.String(100))
@@ -45,22 +43,10 @@ class Order(db.Model):
     status = db.Column(db.String(20), default="Pending")
 
 
+# ---------------- DB INIT ----------------
 with app.app_context():
     os.makedirs("static/uploads", exist_ok=True)
     db.create_all()
-
-    if Product.query.count() == 0:
-        default_products = [
-            Product(name="Banana Crisps", category="Fruit Crisps", price=80, weight="80g", stock=20, available=True),
-            Product(name="Jackfruit Crisps", category="Fruit Crisps", price=120, weight="80g", stock=20, available=True),
-            Product(name="Beetroot Crisps", category="Veggie Crisps", price=90, weight="90g", stock=20, available=True),
-            Product(name="Sweet Potato Crisps", category="Veggie Crisps", price=170, weight="90g", stock=20, available=True),
-            Product(name="Carrot Crisps", category="Veggie Crisps", price=80, weight="80g", stock=20, available=True),
-            Product(name="Ladies Finger Crisps", category="Veggie Crisps", price=110, weight="80g", stock=20, available=True),
-            Product(name="Bitterguard Crisps", category="Veggie Crisps", price=100, weight="80g", stock=20, available=True),
-        ]
-        db.session.add_all(default_products)
-        db.session.commit()
 
 
 def get_product_image(product_name):
@@ -78,17 +64,15 @@ def get_product_image(product_name):
     for key in images:
         if key in name:
             return images[key]
+
     return "BANANA.png"
 
 
+# ---------------- ROUTES ----------------
 @app.route("/")
 def home():
     products = Product.query.all()
-    return render_template(
-        "index.html",
-        products=products,
-        get_product_image=get_product_image
-    )
+    return render_template("index.html", products=products, get_product_image=get_product_image)
 
 
 @app.route("/checkout")
@@ -117,7 +101,7 @@ def send_otp():
     session["otp"] = str(otp)
     session["otp_phone"] = phone
 
-    return jsonify({"message": "OTP Sent", "otp": str(otp)})
+    return jsonify({"otp": str(otp)})
 
 
 @app.route("/verify_otp", methods=["POST"])
