@@ -102,10 +102,11 @@ function loadCheckout() {
     clearBtn.innerText = "Empty Cart";
     clearBtn.onclick = clearCart;
     clearBtn.style.marginBottom = "20px";
-    clearBtn.style.background = "white";
-    clearBtn.style.color = "black";
-    clearBtn.style.padding = "10px 18px";
-    clearBtn.style.border = "1px solid #999";
+    clearBtn.style.background = "#616161";
+    clearBtn.style.color = "white";
+    clearBtn.style.padding = "8px 14px";
+    clearBtn.style.fontSize = "14px";
+    clearBtn.style.border = "none";
     clearBtn.style.borderRadius = "8px";
     clearBtn.style.cursor = "pointer";
     summary.appendChild(clearBtn);
@@ -130,9 +131,14 @@ function loadCheckout() {
                     <strong>${item.name}</strong><br><br>
                     Qty: ${item.quantity}
 
-                    <button onclick="increaseQty('${item.name}')">+</button>
-                    <button onclick="decreaseQty('${item.name}')">−</button>
-                    <button onclick="removeItem('${item.name}')">✕</button>
+                    <button onclick="increaseQty('${item.name}')" 
+                    style="background:#2e7d32; color:white; width:35px; height:35px; padding:0; font-size:20px; border:none; border-radius:8px; margin-left:8px;">+</button>
+
+                    <button onclick="decreaseQty('${item.name}')" 
+                    style="background:#fb8c00; color:white; width:35px; height:35px; padding:0; font-size:20px; border:none; border-radius:8px; margin-left:5px;">−</button>
+
+                    <button onclick="removeItem('${item.name}')" 
+                    style="background:#e53935; color:white; width:35px; height:35px; padding:0; font-size:18px; border:none; border-radius:8px; margin-left:5px;">✕</button>
 
                     <br><br>
                     <strong>₹${item.price * item.quantity}</strong>
@@ -147,8 +153,6 @@ function loadCheckout() {
     totalBox.innerText = "₹" + total;
 }
 
-
-// OTP SEND
 async function sendOTP() {
     let phone = document.getElementById("customerPhone").value;
 
@@ -171,8 +175,6 @@ async function sendOTP() {
         "Your OTP is: " + result.otp;
 }
 
-
-// OTP VERIFY
 async function verifyOTP() {
     let phone = document.getElementById("customerPhone").value;
     let otp = document.getElementById("otpBox").value;
@@ -199,7 +201,6 @@ async function verifyOTP() {
         document.getElementById("otpStatus").innerText = "Wrong OTP ❌";
     }
 }
-
 
 async function placeOrder() {
     if (!otpVerified) {
