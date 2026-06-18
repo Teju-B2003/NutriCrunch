@@ -4,14 +4,10 @@ function updateCartCount() {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let count = 0;
 
-    cart.forEach(item => {
-        count += item.quantity;
-    });
+    cart.forEach(item => count += item.quantity);
 
     let cartCount = document.getElementById("cart-count");
-    if (cartCount) {
-        cartCount.innerText = count;
-    }
+    if (cartCount) cartCount.innerText = count;
 }
 
 function scrollToProducts() {
@@ -21,7 +17,40 @@ function scrollToProducts() {
     }
 }
 
-function addToCart(name, price) {
+function getCartQty(name) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let item = cart.find(i => i.name === name);
+    return item ? item.quantity : 0;
+}
+
+function renderCartControls(productId, name, price) {
+    let container = document.getElementById("cart-controls-" + productId);
+    if (!container) return;
+
+    let qty = getCartQty(name);
+
+    if (qty === 0) {
+        container.innerHTML = `
+            <button onclick="addToCart('${name}', '${price}', ${productId})">
+                Add to Cart
+            </button>
+        `;
+    } else {
+        container.innerHTML = `
+            <div style="display:flex; justify-content:center; gap:10px; align-items:center;">
+                <button onclick="decreaseQty('${name}', ${productId})"
+                style="width:35px;height:35px;background:#fb8c00;color:white;border:none;border-radius:8px;">−</button>
+
+                <span style="font-size:20px;font-weight:bold;">${qty}</span>
+
+                <button onclick="increaseQty('${name}', ${productId})"
+                style="width:35px;height:35px;background:#2e7d32;color:white;border:none;border-radius:8px;">+</button>
+            </div>
+        `;
+    }
+}
+
+function addToCart(name, price, productId = null) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let existing = cart.find(item => item.name === name);
 
@@ -37,35 +66,37 @@ function addToCart(name, price) {
 
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
+
+    if (productId) renderCartControls(productId, name, price);
 }
 
-function increaseQty(name) {
+function increaseQty(name, productId = null) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     cart.forEach(item => {
-        if (item.name === name) {
-            item.quantity += 1;
-        }
+        if (item.name === name) item.quantity += 1;
     });
 
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
     loadCheckout();
+
+    if (productId) renderCartControls(productId, name);
 }
 
-function decreaseQty(name) {
+function decreaseQty(name, productId = null) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     cart = cart.map(item => {
-        if (item.name === name) {
-            item.quantity -= 1;
-        }
+        if (item.name === name) item.quantity -= 1;
         return item;
     }).filter(item => item.quantity > 0);
 
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
     loadCheckout();
+
+    if (productId) renderCartControls(productId, name);
 }
 
 function removeItem(name) {
@@ -108,7 +139,6 @@ function loadCheckout() {
     clearBtn.style.fontSize = "14px";
     clearBtn.style.border = "none";
     clearBtn.style.borderRadius = "8px";
-    clearBtn.style.cursor = "pointer";
     summary.appendChild(clearBtn);
 
     let total = 0;
@@ -125,20 +155,20 @@ function loadCheckout() {
         row.innerHTML = `
             <div style="display:flex; gap:15px; align-items:center; background:white; padding:15px; border-radius:15px;">
                 <img src="/static/images/${imageName}" 
-                     style="width:90px; height:90px; object-fit:cover; border-radius:12px;">
+                     style="width:90px;height:90px;object-fit:cover;border-radius:12px;">
 
                 <div>
                     <strong>${item.name}</strong><br><br>
                     Qty: ${item.quantity}
 
                     <button onclick="increaseQty('${item.name}')" 
-                    style="background:#2e7d32; color:white; width:35px; height:35px; padding:0; font-size:20px; border:none; border-radius:8px; margin-left:8px;">+</button>
+                    style="background:#2e7d32;color:white;width:35px;height:35px;border:none;border-radius:8px;">+</button>
 
                     <button onclick="decreaseQty('${item.name}')" 
-                    style="background:#fb8c00; color:white; width:35px; height:35px; padding:0; font-size:20px; border:none; border-radius:8px; margin-left:5px;">−</button>
+                    style="background:#fb8c00;color:white;width:35px;height:35px;border:none;border-radius:8px;">−</button>
 
                     <button onclick="removeItem('${item.name}')" 
-                    style="background:#e53935; color:white; width:35px; height:35px; padding:0; font-size:18px; border:none; border-radius:8px; margin-left:5px;">✕</button>
+                    style="background:#e53935;color:white;width:35px;height:35px;border:none;border-radius:8px;">✕</button>
 
                     <br><br>
                     <strong>₹${item.price * item.quantity}</strong>
@@ -163,16 +193,12 @@ async function sendOTP() {
 
     let response = await fetch("/send_otp", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ phone: phone })
     });
 
     let result = await response.json();
-
-    document.getElementById("otpStatus").innerText =
-        "Your OTP is: " + result.otp;
+    document.getElementById("otpStatus").innerText = "Your OTP is: " + result.otp;
 }
 
 async function verifyOTP() {
@@ -181,13 +207,8 @@ async function verifyOTP() {
 
     let response = await fetch("/verify_otp", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            phone: phone,
-            otp: otp
-        })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ phone, otp })
     });
 
     let result = await response.json();
@@ -213,7 +234,6 @@ async function placeOrder() {
     let address = document.getElementById("customerAddress").value;
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
     if (cart.length === 0) {
         alert("Cart is empty");
         return;
@@ -223,23 +243,17 @@ async function placeOrder() {
     let orderText = "";
 
     cart.forEach(item => {
-        orderText += item.name + " x " + item.quantity +
-            " = ₹" + (item.price * item.quantity) + "\n";
-
+        orderText += item.name + " x " + item.quantity + " = ₹" + (item.price * item.quantity) + "\n";
         total += item.price * item.quantity;
     });
 
     await fetch("/save_order", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-            name: name,
-            phone: phone,
-            address: address,
+            name, phone, address,
             items: orderText,
-            total: total
+            total
         })
     });
 
