@@ -54,9 +54,11 @@
             <p>{{ product.weight }}</p>
             <h4>₹{{ product.price }}</h4>
 
-            <button onclick="addToCart('{{ product.name }}', '{{ product.price }}')">
-                Add to Cart
-            </button>
+            <div id="cart-controls-{{ product.id }}">
+    <button onclick="addToCart('{{ product.name }}', '{{ product.price }}')">
+        Add to Cart
+    </button>
+</div>
         </div>
         {% endfor %}
     </div>
