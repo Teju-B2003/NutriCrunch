@@ -14,7 +14,7 @@ app.config["UPLOAD_FOLDER"] = "static/uploads"
 db = SQLAlchemy(app)
 
 
-# ---------------- MODELS ----------------
+# ================= MODELS =================
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -43,20 +43,22 @@ class Order(db.Model):
     status = db.Column(db.String(20), default="Pending")
 
 
-# ---------------- DB INIT ----------------
+# ================= DB INIT =================
 with app.app_context():
     os.makedirs("static/uploads", exist_ok=True)
     db.create_all()
 
     if Product.query.count() == 0:
-        products = [
+        default_products = [
             Product(name="Banana Crisps", category="Fruit Crisps", price=80, weight="80g", stock=20, available=True),
             Product(name="Jackfruit Crisps", category="Fruit Crisps", price=120, weight="80g", stock=20, available=True),
             Product(name="Beetroot Crisps", category="Veggie Crisps", price=90, weight="90g", stock=20, available=True),
             Product(name="Sweet Potato Crisps", category="Veggie Crisps", price=170, weight="90g", stock=20, available=True),
+            Product(name="Carrot Crisps", category="Veggie Crisps", price=80, weight="80g", stock=20, available=True),
+            Product(name="Ladies Finger Crisps", category="Veggie Crisps", price=110, weight="80g", stock=20, available=True),
+            Product(name="Bitterguard Crisps", category="Veggie Crisps", price=100, weight="80g", stock=20, available=True),
         ]
-
-        db.session.add_all(products)
+        db.session.add_all(default_products)
         db.session.commit()
 
 
@@ -75,15 +77,18 @@ def get_product_image(product_name):
     for key in images:
         if key in name:
             return images[key]
-
     return "BANANA.png"
 
 
-# ---------------- ROUTES ----------------
+# ================= ROUTES =================
 @app.route("/")
 def home():
     products = Product.query.all()
-    return render_template("index.html", products=products, get_product_image=get_product_image)
+    return render_template(
+        "index.html",
+        products=products,
+        get_product_image=get_product_image
+    )
 
 
 @app.route("/checkout")
@@ -103,6 +108,7 @@ def track_order():
     return render_template("track.html", orders=orders)
 
 
+# ================= OTP =================
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
     data = request.get_json()
@@ -127,6 +133,7 @@ def verify_otp():
     return jsonify({"success": False})
 
 
+# ================= SAVE ORDER =================
 @app.route("/save_order", methods=["POST"])
 def save_order():
     data = request.get_json()
@@ -158,6 +165,7 @@ def save_order():
     return jsonify({"message": "Order Saved"})
 
 
+# ================= ORDER STATUS =================
 @app.route("/update_status/<int:order_id>/<status>")
 def update_status(order_id, status):
     order = Order.query.get(order_id)
@@ -180,6 +188,7 @@ def delete_order(order_id):
     return redirect("/dashboard")
 
 
+# ================= ADMIN =================
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "POST":
@@ -193,6 +202,7 @@ def admin():
     return render_template("admin_login.html")
 
 
+# ================= DASHBOARD =================
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     if "admin" not in session:
@@ -240,6 +250,7 @@ def dashboard():
     )
 
 
+# ================= UPDATE PRODUCT =================
 @app.route("/update_product/<int:id>", methods=["POST"])
 def update_product(id):
     product = Product.query.get(id)
@@ -254,6 +265,7 @@ def update_product(id):
     return redirect("/dashboard")
 
 
+# ================= LOGOUT =================
 @app.route("/logout")
 def logout():
     session.pop("admin", None)
