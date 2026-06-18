@@ -53,11 +53,15 @@
             <p>{{ product.weight }}</p>
             <h4>₹{{ product.price }}</h4>
 
-            <div id="cart-controls-{{ product.id }}">
-                <button onclick="addToCart('{{ product.name }}', '{{ product.price }}', '{{ product.id }}')">
-                    Add to Cart
-                </button>
-            </div>
+            <div id="cart-controls-{{ product.id }}"></div>
+
+<script>
+renderCartControls(
+    "{{ product.id }}",
+    "{{ product.name }}",
+    "{{ product.price }}"
+);
+</script>
 
             <script>
                 renderCartControls(
