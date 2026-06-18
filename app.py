@@ -130,7 +130,9 @@ def verify_otp():
         return jsonify({"success": True})
 
     return jsonify({"success": False})
-    @app.route("/save_order", methods=["POST"])
+
+
+@app.route("/save_order", methods=["POST"])
 def save_order():
     data = request.get_json()
 
