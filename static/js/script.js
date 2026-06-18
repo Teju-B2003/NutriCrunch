@@ -282,3 +282,17 @@ async function placeOrder() {
 
     window.open("https://wa.me/918660586938?text=" + message, "_blank");
 }
+function searchProducts() {
+    let input = document.getElementById("searchBox").value.toLowerCase();
+    let cards = document.querySelectorAll(".product-card");
+
+    cards.forEach(card => {
+        let name = card.querySelector("h3").innerText.toLowerCase();
+
+        if (name.includes(input)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
