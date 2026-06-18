@@ -48,6 +48,17 @@ with app.app_context():
     os.makedirs("static/uploads", exist_ok=True)
     db.create_all()
 
+    if Product.query.count() == 0:
+        products = [
+            Product(name="Banana Crisps", category="Fruit Crisps", price=80, weight="80g", stock=20, available=True),
+            Product(name="Jackfruit Crisps", category="Fruit Crisps", price=120, weight="80g", stock=20, available=True),
+            Product(name="Beetroot Crisps", category="Veggie Crisps", price=90, weight="90g", stock=20, available=True),
+            Product(name="Sweet Potato Crisps", category="Veggie Crisps", price=170, weight="90g", stock=20, available=True),
+        ]
+
+        db.session.add_all(products)
+        db.session.commit()
+
 
 def get_product_image(product_name):
     images = {
