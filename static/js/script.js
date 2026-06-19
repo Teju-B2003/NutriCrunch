@@ -49,6 +49,7 @@ function addToCart(name, price, id) {
 
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
+
     renderCartControls(id, name, price);
 }
 
