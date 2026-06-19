@@ -288,4 +288,23 @@ table td{
         display:block;
         overflow-x:auto;
     }
+    .blog-preview{
+    padding:80px 60px;
+    background:#f8f8f8;
+}
+
+.blog-grid{
+    display:flex;
+    gap:25px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.blog-card{
+    background:white;
+    width:350px;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
 }
