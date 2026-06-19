@@ -3,6 +3,24 @@ let otpVerified = false;
 // ================= PAGE LOAD =================
 document.addEventListener("DOMContentLoaded", function () {
     updateCartCount();
+
+    document.querySelectorAll("[id^='cart-controls-']").forEach(box => {
+        let id = box.id.replace("cart-controls-", "");
+        let btn = box.querySelector("button");
+
+        if (btn) {
+            let onclickText = btn.getAttribute("onclick");
+            if (onclickText) {
+                let matches = onclickText.match(/addToCart\('(.+?)',\s*(\d+),\s*'(.+?)'\)/);
+                if (matches) {
+                    let name = matches[1];
+                    let price = matches[2];
+                    renderCartControls(id, name, price);
+                }
+            }
+        }
+    });
+
     loadCheckout();
 });
 
@@ -19,8 +37,8 @@ function updateCartCount() {
 function renderCartControls(id, name, price) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let item = cart.find(x => x.name === name);
-
     let box = document.getElementById("cart-controls-" + id);
+
     if (!box) return;
 
     if (!item) {
@@ -49,7 +67,6 @@ function addToCart(name, price, id) {
 
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartCount();
-
     renderCartControls(id, name, price);
 }
 
@@ -110,12 +127,6 @@ function removeItem(name) {
     loadCheckout();
 }
 
-function clearCart() {
-    localStorage.removeItem("cart");
-    updateCartCount();
-    loadCheckout();
-}
-
 function loadCheckout() {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let summary = document.getElementById("order-items");
@@ -137,25 +148,14 @@ function loadCheckout() {
         let row = document.createElement("div");
         row.style.marginBottom = "20px";
 
-        let imageName = item.name
-            .toUpperCase()
-            .replace(" CRISPS", "")
-            .replace(/ /g, "") + ".png";
-
         row.innerHTML = `
-            <div style="display:flex;gap:15px;background:white;padding:15px;border-radius:15px;align-items:center;">
-                
-                <img src="/static/images/${imageName}" 
-                     style="width:90px;height:90px;object-fit:cover;border-radius:12px;">
-
+            <div style="display:flex;gap:15px;background:white;padding:15px;border-radius:15px;">
                 <div>
                     <strong>${item.name}</strong><br><br>
-
                     <button onclick="decreaseQty('${item.name}')">−</button>
                     <span style="margin:0 10px;">${item.quantity}</span>
                     <button onclick="increaseQty('${item.name}')">+</button>
                     <button onclick="removeItem('${item.name}')">✕</button>
-
                     <br><br>
                     <strong>₹${item.price * item.quantity}</strong>
                 </div>
