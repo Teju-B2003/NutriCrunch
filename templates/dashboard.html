@@ -129,6 +129,14 @@
                         </option>
                     </select>
                 </td>
+                <td>
+                    <a href="/delete_product/{{ product.id }}"
+                      onclick="return confirm('Delete this product?')">
+                       <button type="button" style="background:red;">
+                          Delete
+                       </button>
+                    </a>
+               </td>
             </tr>
             {% endfor %}
         </table>
