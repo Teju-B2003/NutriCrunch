@@ -54,11 +54,11 @@
             <h4>₹{{ product.price }}</h4>
 
             <!-- IMPORTANT: added data-name and data-price -->
-            <div
-                id="cart-controls-{{ product.id }}"
-                data-name="{{ product.name }}"
-                data-price="{{ product.price }}">
-            </div>
+            <div id="cart-controls-{{ product.id }}">
+    <button onclick="addToCart('{{ product.name }}', {{ product.price }}, '{{ product.id }}')">
+        Add to Cart
+    </button>
+</div>
 
         </div>
         {% endfor %}
