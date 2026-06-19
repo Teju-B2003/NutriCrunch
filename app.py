@@ -265,6 +265,7 @@ def update_product(id):
 
     return redirect("/dashboard")
     
+# ================= UPDATE ALL PRODUCTS =================
 @app.route("/update_all_products", methods=["POST"])
 def update_all_products():
     product_ids = request.form.getlist("product_id")
@@ -279,8 +280,7 @@ def update_all_products():
             product.available = request.form[f"available_{pid}"] == "true"
 
     db.session.commit()
-    return redirect("/dashboard")    
-
+    return redirect("/dashboard")
 
 # ================= LOGOUT =================
 @app.route("/logout")
