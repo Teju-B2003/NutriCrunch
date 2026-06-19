@@ -53,12 +53,11 @@
             <p>{{ product.weight }}</p>
             <h4>₹{{ product.price }}</h4>
 
-            <!-- IMPORTANT: added data-name and data-price -->
             <div id="cart-controls-{{ product.id }}">
-    <button onclick="addToCart('{{ product.name }}', {{ product.price }}, '{{ product.id }}')">
-        Add to Cart
-    </button>
-</div>
+                <button onclick="addToCart('{{ product.name }}', {{ product.price }}, '{{ product.id }}')">
+                    Add to Cart
+                </button>
+            </div>
 
         </div>
         {% endfor %}
@@ -71,6 +70,12 @@
 </footer>
 
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    updateCartCount();
+});
+</script>
 
 </body>
 </html>
