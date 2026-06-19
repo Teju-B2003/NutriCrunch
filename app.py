@@ -49,28 +49,28 @@ with app.app_context():
     db.create_all()
 
     if Product.query.count() == 0:
-        default_products = [
-            Product(name="Banana Crisps", category="Fruit Crisps", price=80, weight="80g", stock=20, available=True),
-            Product(name="Jackfruit Crisps", category="Fruit Crisps", price=120, weight="80g", stock=20, available=True),
-            Product(name="Beetroot Crisps", category="Veggie Crisps", price=90, weight="90g", stock=20, available=True),
-            Product(name="Sweet Potato Crisps", category="Veggie Crisps", price=170, weight="90g", stock=20, available=True),
-            Product(name="Carrot Crisps", category="Veggie Crisps", price=80, weight="80g", stock=20, available=True),
-            Product(name="Ladies Finger Crisps", category="Veggie Crisps", price=110, weight="80g", stock=20, available=True),
-            Product(name="Bitterguard Crisps", category="Veggie Crisps", price=100, weight="80g", stock=20, available=True),
+        products = [
+            Product(name="Banana Crisps", category="Fruit Crisps", price=80, weight="80g", stock=20),
+            Product(name="Jackfruit Crisps", category="Fruit Crisps", price=120, weight="80g", stock=20),
+            Product(name="Beetroot Crisps", category="Veggie Crisps", price=90, weight="90g", stock=20),
+            Product(name="Sweet Potato Crisps", category="Veggie Crisps", price=170, weight="90g", stock=20),
+            Product(name="Carrot Crisps", category="Veggie Crisps", price=80, weight="80g", stock=20),
+            Product(name="Ladies Finger Crisps", category="Veggie Crisps", price=110, weight="80g", stock=20),
+            Product(name="Bitter Gourd Crisps", category="Veggie Crisps", price=100, weight="80g", stock=20),
         ]
-        db.session.add_all(default_products)
+        db.session.add_all(products)
         db.session.commit()
 
 
 def get_product_image(product_name):
     images = {
         "banana": "BANANA.png",
-        "beetroot": "BEETROOT.png",
-        "bitterguard": "BITTERGUARD.png",
-        "carrot": "CARROT.png",
         "jackfruit": "JACKFRUIT.png",
+        "beetroot": "BEETROOT.png",
+        "sweet potato": "SWEETPOTATO.png",
+        "carrot": "CARROT.png",
         "ladies finger": "LADIESFINGER.png",
-        "sweet potato": "SWEETPOTATO.png"
+        "bitter": "BITTERGUARD.png"
     }
 
     name = product_name.lower()
@@ -165,44 +165,17 @@ def save_order():
     return jsonify({"message": "Order Saved"})
 
 
-# ================= ORDER STATUS =================
-@app.route("/update_status/<int:order_id>/<status>")
-def update_status(order_id, status):
-    order = Order.query.get(order_id)
-
-    if order:
-        order.status = status
-        db.session.commit()
-
-    return redirect("/dashboard")
-
-
-@app.route("/delete_order/<int:order_id>")
-def delete_order(order_id):
-    order = Order.query.get(order_id)
-
-    if order:
-        db.session.delete(order)
-        db.session.commit()
-
-    return redirect("/dashboard")
-
-
 # ================= ADMIN =================
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-
-        if username == "admin" and password == "Nutri@2026":
+        if request.form["username"] == "admin" and request.form["password"] == "Nutri@2026":
             session["admin"] = True
             return redirect("/dashboard")
 
     return render_template("admin_login.html")
 
 
-# ================= DASHBOARD =================
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     if "admin" not in session:
@@ -212,7 +185,7 @@ def dashboard():
         image = request.files["image"]
         filename = ""
 
-        if image and image.filename != "":
+        if image and image.filename:
             filename = secure_filename(image.filename)
             image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
@@ -233,46 +206,24 @@ def dashboard():
     orders = Order.query.all()
     buyers = Buyer.query.all()
 
-    total_orders = len(orders)
-    total_products = len(products)
-    total_revenue = sum(order.total for order in orders)
-    pending_orders = len([o for o in orders if o.status != "Delivered"])
-
     return render_template(
-    "dashboard.html",
-    products=products,
-    orders=orders,
-    buyers=buyers,
-    total_orders=total_orders,
-    total_products=total_products,
-    total_revenue=total_revenue,
-    pending_orders=pending_orders,
-    get_product_image=get_product_image
-)
+        "dashboard.html",
+        products=products,
+        orders=orders,
+        buyers=buyers,
+        total_orders=len(orders),
+        total_products=len(products),
+        total_revenue=sum(order.total for order in orders),
+        pending_orders=len([o for o in orders if o.status != "Delivered"])
+    )
 
 
-# ================= UPDATE PRODUCT =================
-@app.route("/update_product/<int:id>", methods=["POST"])
-def update_product(id):
-    product = Product.query.get(id)
-
-    if product:
-        product.price = int(request.form["price"])
-        product.weight = request.form["weight"]
-        product.stock = int(request.form["stock"])
-        product.available = request.form["available"] == "true"
-        db.session.commit()
-
-    return redirect("/dashboard")
-    
-# ================= UPDATE ALL PRODUCTS =================
 @app.route("/update_all_products", methods=["POST"])
 def update_all_products():
     product_ids = request.form.getlist("product_id")
 
     for pid in product_ids:
         product = Product.query.get(int(pid))
-
         if product:
             product.price = int(request.form[f"price_{pid}"])
             product.weight = request.form[f"weight_{pid}"]
@@ -281,7 +232,8 @@ def update_all_products():
 
     db.session.commit()
     return redirect("/dashboard")
-    # ================= DELETE PRODUCT =================
+
+
 @app.route("/delete_product/<int:id>")
 def delete_product(id):
     product = Product.query.get(id)
@@ -292,7 +244,7 @@ def delete_product(id):
 
     return redirect("/dashboard")
 
-# ================= LOGOUT =================
+
 @app.route("/logout")
 def logout():
     session.pop("admin", None)
