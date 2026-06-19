@@ -54,6 +54,38 @@ class Blog(db.Model):
 with app.app_context():
     os.makedirs("static/uploads", exist_ok=True)
     db.create_all()
+    if Blog.query.count() == 0:
+    blogs = [
+        Blog(
+            title="Why Dehydrated Snacks Are Better Than Fried Chips",
+            short_desc="Healthy snacking with more nutrients and less oil.",
+            content="""
+Dehydrated snacks retain natural nutrients and avoid unhealthy frying oils.
+
+Benefits:
+• Lower fat
+• No preservatives
+• Better digestion
+• Natural taste
+            """,
+            image="BANANA.png"
+        ),
+        Blog(
+            title="Benefits of Banana Crisps for Kids",
+            short_desc="A tasty natural energy snack for children.",
+            content="""
+Banana crisps provide potassium, fiber and natural energy.
+
+Perfect for:
+• School snacks
+• Evening hunger
+• Travel food
+            """,
+            image="JACKFRUIT.png"
+        )
+    ]
+    db.session.add_all(blogs)
+    db.session.commit()
 
     if Product.query.count() == 0:
         products = [
