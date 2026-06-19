@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NutriCrunch Blogs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">🌿 NutriCrunch</div>
+    <nav>
+        <a href="/">Home</a>
+    </nav>
+</header>
+
+<section class="products">
+    <h2>Health Blogs</h2>
+
+    <div class="blog-grid">
+        {% for blog in blogs %}
+        <div class="blog-card">
+            <h3>{{ blog.title }}</h3>
+            <p>{{ blog.short_desc }}</p>
+            <a href="/blog/{{ blog.id }}">
+                <button>Read More</button>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+</body>
+</html>
