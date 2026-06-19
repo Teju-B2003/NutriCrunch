@@ -239,15 +239,16 @@ def dashboard():
     pending_orders = len([o for o in orders if o.status != "Delivered"])
 
     return render_template(
-        "dashboard.html",
-        products=products,
-        orders=orders,
-        buyers=buyers,
-        total_orders=total_orders,
-        total_products=total_products,
-        total_revenue=total_revenue,
-        pending_orders=pending_orders
-    )
+    "dashboard.html",
+    products=products,
+    orders=orders,
+    buyers=buyers,
+    total_orders=total_orders,
+    total_products=total_products,
+    total_revenue=total_revenue,
+    pending_orders=pending_orders,
+    get_product_image=get_product_image
+)
 
 
 # ================= UPDATE PRODUCT =================
