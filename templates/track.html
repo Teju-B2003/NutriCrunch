@@ -1,77 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Order | NutriCrunch</title>
+    <title>Track Order</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-<header class="navbar">
-    <div class="logo">🌿 NutriCrunch</div>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/checkout">Cart</a>
-    </nav>
-</header>
-
 <div class="checkout-container">
-    <h1>Track Your Order 📦</h1>
+    <h1>Track Order</h1>
 
-    <form method="POST" action="/track_order" class="checkout-form">
-        <input 
-            type="text"
-            name="phone"
-            placeholder="Enter your phone number"
-            required
-        >
-        <button type="submit">Track Order</button>
+    <form action="/track_order" method="POST" class="checkout-form">
+        <input name="phone" placeholder="Enter Phone Number" required>
+        <button type="submit">Track</button>
     </form>
 
     {% if orders %}
-        <div class="order-summary">
-            <h2>Your Orders</h2>
+        <h2>Your Orders</h2>
 
-            {% for order in orders %}
-                <div style="background:white; padding:20px; margin-bottom:15px; border-radius:15px; box-shadow:0 3px 10px rgba(0,0,0,0.1);">
-                    <p><strong>Order ID:</strong> {{ order.id }}</p>
-                    <p><strong>Total:</strong> ₹{{ order.total }}</p>
-                    <p><strong>Items:</strong></p>
-                    <pre style="white-space: pre-wrap;">{{ order.items }}</pre>
-
-                    <p>
-                        <strong>Status:</strong>
-
-                        {% if order.status == "Pending" %}
-                            <span style="color:orange;font-weight:bold;">Pending ⏳</span>
-
-                        {% elif order.status == "Confirmed" %}
-                            <span style="color:blue;font-weight:bold;">Confirmed ✅</span>
-
-                        {% elif order.status == "Packed" %}
-                            <span style="color:purple;font-weight:bold;">Packed 📦</span>
-
-                        {% elif order.status == "Shipped" %}
-                            <span style="color:#1f5c2e;font-weight:bold;">Shipped 🚚</span>
-
-                        {% elif order.status == "Delivered" %}
-                            <span style="color:green;font-weight:bold;">Delivered 🎉</span>
-
-                        {% else %}
-                            <span>{{ order.status }}</span>
-                        {% endif %}
-                    </p>
-                </div>
-            {% endfor %}
+        {% for order in orders %}
+        <div class="dashboard-card">
+            <p><b>Order ID:</b> {{ order.id }}</p>
+            <p><b>Status:</b> {{ order.status }}</p>
+            <p><b>Total:</b> ₹{{ order.total }}</p>
         </div>
+        {% endfor %}
     {% endif %}
 </div>
-
-<footer>
-    <p>📍 Yelahanka New Town, Bengaluru</p>
-    <p>📞 WhatsApp: 8660586938</p>
-</footer>
 
 </body>
 </html>
