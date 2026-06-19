@@ -63,16 +63,20 @@
         </form>
     </div>
 
-    <!-- Products -->
-    <div class="dashboard-card">
-        <h2>Products</h2>
+ <!-- Products -->
+<div class="dashboard-card">
+    <h2>Products</h2>
 
+    <form action="/update_all_products" method="POST">
         <table>
             <tr>
                 <th>Image</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th>Edit</th>
+                <th>Price</th>
+                <th>Weight</th>
+                <th>Stock</th>
+                <th>Status</th>
             </tr>
 
             {% for product in products %}
@@ -84,47 +88,56 @@
                     {% endif %}
                 </td>
 
-                <td>{{ product.name }}</td>
+                <td>
+                    {{ product.name }}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                </td>
+
                 <td>{{ product.category }}</td>
 
                 <td>
-                    <form action="/update_product/{{ product.id }}" method="POST"
-                          style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <input
+                        name="price_{{ product.id }}"
+                        value="{{ product.price }}"
+                        style="width:80px;">
+                </td>
 
-                        <input name="price"
-                               value="{{ product.price }}"
-                               placeholder="Price"
-                               style="width:80px;">
+                <td>
+                    <input
+                        name="weight_{{ product.id }}"
+                        value="{{ product.weight }}"
+                        style="width:80px;">
+                </td>
 
-                        <input name="weight"
-                               value="{{ product.weight }}"
-                               placeholder="Weight"
-                               style="width:80px;">
+                <td>
+                    <input
+                        name="stock_{{ product.id }}"
+                        value="{{ product.stock }}"
+                        style="width:80px;">
+                </td>
 
-                        <input name="stock"
-                               value="{{ product.stock }}"
-                               placeholder="Stock"
-                               style="width:80px;">
+                <td>
+                    <select name="available_{{ product.id }}">
+                        <option value="true"
+                            {% if product.available %}selected{% endif %}>
+                            In Stock
+                        </option>
 
-                        <select name="available">
-                            <option value="true"
-                                {% if product.available %}selected{% endif %}>
-                                In Stock
-                            </option>
-
-                            <option value="false"
-                                {% if not product.available %}selected{% endif %}>
-                                Out of Stock
-                            </option>
-                        </select>
-
-                        <button type="submit">Update</button>
-                    </form>
+                        <option value="false"
+                            {% if not product.available %}selected{% endif %}>
+                            Out of Stock
+                        </option>
+                    </select>
                 </td>
             </tr>
             {% endfor %}
         </table>
-    </div>
+
+        <div style="margin-top:25px; text-align:center;">
+            <button type="submit">Save All Changes</button>
+        </div>
+    </form>
+</div>
 
     <!-- Orders -->
     <div class="dashboard-card">
