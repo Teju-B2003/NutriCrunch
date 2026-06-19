@@ -128,7 +128,7 @@ def home():
         products=products,
         get_product_image=get_product_image
     )
-    @app.route("/blogs")
+@app.route("/blogs")
 def blogs():
     all_blogs = Blog.query.all()
     return render_template("blogs.html", blogs=all_blogs)
