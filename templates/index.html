@@ -19,10 +19,56 @@
     </nav>
 </header>
 
-<section class="hero">
-    <h1>Healthy Crunch.<br>Real Taste.</h1>
-    <p>Premium dehydrated fruit & veggie crisps with zero oil and zero preservatives.</p>
-    <button onclick="scrollToProducts()">Shop Now</button>
+<section class="delivery-banner">
+    🚚 Free Delivery Above ₹499 | Bengaluru Only
+</section>
+
+<section class="hero-premium">
+    <div class="hero-left">
+        <h1>Crunch Better.<br>Live Healthier.</h1>
+        <p>
+            Premium dehydrated fruit & veggie crisps with zero oil,
+            zero preservatives and 100% natural ingredients.
+        </p>
+        <button onclick="scrollToProducts()">Shop Now</button>
+    </div>
+
+    <div class="hero-right">
+        <img src="{{ url_for('static', filename='images/BANANA.png') }}">
+    </div>
+</section>
+
+<section class="why-section">
+    <div class="why-header">
+        <p>WHY NUTRICRUNCH</p>
+        <h2>Healthy snacking,<br>without compromise.</h2>
+    </div>
+
+    <div class="why-grid">
+        <div class="why-card">
+            <div class="why-icon">🍌</div>
+            <h3>100% Natural</h3>
+            <p>Made from real fruits and vegetables.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="why-icon">💨</div>
+            <h3>Air Dehydrated</h3>
+            <p>Slow dried to preserve nutrients and crunch.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="why-icon">🚫</div>
+            <h3>Zero Junk</h3>
+            <p>No oil, no preservatives, no added sugar.</p>
+        </div>
+
+        <div class="why-card">
+            <div class="why-icon">🌿</div>
+            <h3>Farm Fresh</h3>
+            <p>Fresh ingredients sourced locally.</p>
+        </div>
+    </div>
 </section>
 
 <section id="products" class="products">
@@ -34,7 +80,6 @@
             id="searchBox"
             placeholder="Search products..."
             onkeyup="searchProducts()"
-            style="width:320px; padding:14px; border:1px solid #ccc; border-radius:12px; font-size:16px;"
         >
     </div>
 
@@ -42,11 +87,11 @@
         {% for product in products %}
         <div class="card product-card">
 
-            <img
-                src="{{ url_for('static', filename='images/' + get_product_image(product.name)) }}"
-                alt="{{ product.name }}"
-                style="width:100%; border-radius:15px; margin-bottom:15px;"
-            >
+            {% if product.image %}
+            <img src="{{ url_for('static', filename='uploads/' + product.image) }}">
+            {% else %}
+            <img src="{{ url_for('static', filename='images/' + get_product_image(product.name)) }}">
+            {% endif %}
 
             <h3>{{ product.name }}</h3>
             <p>{{ product.category }}</p>
@@ -58,24 +103,56 @@
                     Add to Cart
                 </button>
             </div>
-
         </div>
         {% endfor %}
     </div>
 </section>
 
-<footer>
+<section class="review-section">
+    <h2>What Customers Say</h2>
+
+    <div class="review-grid">
+        <div class="review-card">
+            ⭐⭐⭐⭐⭐
+            <p>Banana crisps are amazing. My kids loved it.</p>
+            <h4>- Priya</h4>
+        </div>
+
+        <div class="review-card">
+            ⭐⭐⭐⭐⭐
+            <p>Healthy and tasty. Better than chips.</p>
+            <h4>- Rahul</h4>
+        </div>
+
+        <div class="review-card">
+            ⭐⭐⭐⭐⭐
+            <p>Very crunchy and fresh. Loved it.</p>
+            <h4>- Sneha</h4>
+        </div>
+    </div>
+</section>
+
+<section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-box">
+        <h3>Are these fried?</h3>
+        <p>No, all products are dehydrated.</p>
+
+        <h3>Any preservatives?</h3>
+        <p>No preservatives or artificial colors.</p>
+
+        <h3>Delivery area?</h3>
+        <p>Currently Bengaluru only.</p>
+    </div>
+</section>
+
+<footer class="premium-footer">
+    <h2>NutriCrunch</h2>
+    <p>Healthy Snacks. Happy Life.</p>
     <p>📍 Yelahanka New Town, Bengaluru</p>
     <p>📞 WhatsApp: 8660586938</p>
 </footer>
 
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    updateCartCount();
-});
-</script>
-
 </body>
 </html>
