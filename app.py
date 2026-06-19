@@ -96,6 +96,16 @@ def home():
         products=products,
         get_product_image=get_product_image
     )
+    @app.route("/blogs")
+def blogs():
+    all_blogs = Blog.query.all()
+    return render_template("blogs.html", blogs=all_blogs)
+
+
+@app.route("/blog/<int:id>")
+def blog_detail(id):
+    blog = Blog.query.get_or_404(id)
+    return render_template("blog_detail.html", blog=blog)
 
 
 @app.route("/checkout")
