@@ -263,6 +263,22 @@ def update_product(id):
         db.session.commit()
 
     return redirect("/dashboard")
+    
+@app.route("/update_all_products", methods=["POST"])
+def update_all_products():
+    product_ids = request.form.getlist("product_id")
+
+    for pid in product_ids:
+        product = Product.query.get(int(pid))
+
+        if product:
+            product.price = int(request.form[f"price_{pid}"])
+            product.weight = request.form[f"weight_{pid}"]
+            product.stock = int(request.form[f"stock_{pid}"])
+            product.available = request.form[f"available_{pid}"] == "true"
+
+    db.session.commit()
+    return redirect("/dashboard")    
 
 
 # ================= LOGOUT =================
