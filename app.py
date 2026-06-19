@@ -41,6 +41,13 @@ class Order(db.Model):
     items = db.Column(db.Text)
     total = db.Column(db.Integer)
     status = db.Column(db.String(20), default="Pending")
+    
+class Blog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    short_desc = db.Column(db.String(500))
+    content = db.Column(db.Text)
+    image = db.Column(db.String(200))
 
 
 # ================= DB INIT =================
