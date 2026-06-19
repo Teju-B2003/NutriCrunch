@@ -281,6 +281,16 @@ def update_all_products():
 
     db.session.commit()
     return redirect("/dashboard")
+    # ================= DELETE PRODUCT =================
+@app.route("/delete_product/<int:id>")
+def delete_product(id):
+    product = Product.query.get(id)
+
+    if product:
+        db.session.delete(product)
+        db.session.commit()
+
+    return redirect("/dashboard")
 
 # ================= LOGOUT =================
 @app.route("/logout")
