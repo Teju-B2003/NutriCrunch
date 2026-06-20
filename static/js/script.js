@@ -220,8 +220,9 @@ async function placeOrder() {
 
     let name = document.getElementById("customerName").value;
     let phone = document.getElementById("customerPhone").value;
+    let location = document.getElementById("customerLocation").value;
+    let pincode = document.getElementById("customerPincode").value;
     let address = document.getElementById("customerAddress").value;
-
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     if (cart.length === 0) {
