@@ -149,17 +149,44 @@
     <h2>Health Blogs</h2>
 
     <div class="blog-grid">
+
         <div class="blog-card">
             <h3>Why Dehydrated Snacks Are Better</h3>
             <p>Healthy snacking with less oil and more nutrients.</p>
-            <a href="/blogs"><button>Read Blogs</button></a>
+            <button onclick="toggleBlog('blog1')">Read More</button>
+
+            <div id="blog1" style="display:none; margin-top:20px;">
+                <p>
+                    Dehydrated snacks are much healthier than fried chips because
+                    they retain nutrients and avoid unhealthy oils.
+                    <br><br>
+                    Benefits:
+                    <br>• Lower fat
+                    <br>• No preservatives
+                    <br>• Better digestion
+                    <br>• Natural taste
+                </p>
+            </div>
         </div>
 
         <div class="blog-card">
             <h3>Healthy Snacks For Kids</h3>
             <p>Nutritious and tasty snacks children will love.</p>
-            <a href="/blogs"><button>Read Blogs</button></a>
+            <button onclick="toggleBlog('blog2')">Read More</button>
+
+            <div id="blog2" style="display:none; margin-top:20px;">
+                <p>
+                    Banana and fruit crisps are great for kids.
+                    They provide natural energy and fiber.
+                    <br><br>
+                    Perfect for:
+                    <br>• School snacks
+                    <br>• Evening hunger
+                    <br>• Travel food
+                </p>
+            </div>
         </div>
+
     </div>
 </section>
 </section>
